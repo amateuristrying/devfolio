@@ -7,6 +7,33 @@ gsap.set("#shadowPanel", { y: "-75px" });
 
 
 // ===============================
+// STRIP HEIGHT SLIDER CONTROLLER
+// ===============================
+const stripSlider = document.getElementById("stripSlider");
+const stripValText = document.getElementById("stripValText");
+const stripControl = document.getElementById("stripControl");
+
+if (stripSlider && stripValText) {
+    // Restore saved value if available
+    const savedVal = localStorage.getItem("stripPeek");
+    if (savedVal) {
+        stripSlider.value = savedVal;
+        document.documentElement.style.setProperty("--strip-peek", `${savedVal}px`);
+        const cmVal = (savedVal / 10.4).toFixed(1);
+        stripValText.textContent = `${cmVal} cm`;
+    }
+
+    stripSlider.addEventListener("input", (e) => {
+        const val = parseInt(e.target.value, 10);
+        document.documentElement.style.setProperty("--strip-peek", `${val}px`);
+        const cmVal = (val / 10.4).toFixed(1);
+        stripValText.textContent = `${cmVal} cm`;
+        localStorage.setItem("stripPeek", val);
+    });
+}
+
+
+// ===============================
 // GSAP DECODE HOVER EFFECT
 // ===============================
 function setupDecodeEffect(element, duration = 0.35) {
@@ -66,8 +93,9 @@ setupDecodeEffect(knowMoreBtn);
 // ===============================
 knowMoreBtn.addEventListener("click", () => {
 
-    // Hide KNOW MORE button
+    // Hide KNOW MORE button and slider widget
     knowMoreBtn.style.display = "none";
+    if (stripControl) stripControl.style.display = "none";
 
     // Create iframe
     const frame = document.createElement("iframe");
@@ -141,6 +169,7 @@ window.addEventListener("message", (event) => {
         frame.remove();
         knowMoreBtn.style.display = "block";
         knowMoreBtn.innerText = knowMoreBtn.getAttribute("data-original-text") || "Know More ↓";
+        if (stripControl) stripControl.style.display = "flex";
         gsap.set(strip, { y: "-75px" });
     });
 });

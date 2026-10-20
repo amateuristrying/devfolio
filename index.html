@@ -29,14 +29,24 @@
     <!-- Top Right Button -->
     <button id="knowMoreBtn" class="top-right-btn" data-original-text="Know More ↓">Know More ↓</button>
 
-    <!-- Main Content -->
-    <main class="page1-content">
-        <h1>Hi there, I am <span class="name">Abhiroop</span></h1>
-        <p>I help startups and companies build market-viable products.</p>
-    </main>
+    <!-- Hero Section Container -->
+    <div class="hero-container">
+        <main class="page1-content">
+            <h1>Hi there, I am <span class="name">Abhiroop</span></h1>
+            <p>I help startups and companies build market-viable products.</p>
+        </main>
+    </div>
 
     <!-- Green Floor Section -->
     <div class="floor-strip"></div>
+
+    <!-- Interactive Slider to Push Down / Adjust Strip -->
+    <aside class="strip-slider-widget" id="stripControl">
+        <label for="stripSlider">
+            Strip: <span class="slider-value" id="stripValText">5.0 cm</span>
+        </label>
+        <input type="range" id="stripSlider" min="15" max="180" value="52" step="1" title="Slide to push down or adjust the green strip peek">
+    </aside>
 
     <!-- Transition Strip -->
     <div id="shadowPanel"></div>

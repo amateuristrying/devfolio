@@ -1,26 +1,59 @@
 /* =========================
+   CUSTOM PROPERTIES
+========================= */
+:root {
+    --strip-peek: 52px; /* ~5 cm initial peek */
+    --strip-full-height: 260px; /* full height of green floor */
+}
+
+/* =========================
    GENERAL PAGE RULES
 ========================= */
 html {
     height: 100%;
     background-color: #C4E6A8;
-    background: linear-gradient(to bottom, #ffffff 50%, #C4E6A8 50%);
-    overscroll-behavior: none;
-    overscroll-behavior-y: none;
+    background: linear-gradient(to bottom, #ffffff 40%, #C4E6A8 60%);
+    overflow-x: hidden;
 }
 
 body {
     margin: 0;
     padding: 0;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: white;
+    background-color: #C4E6A8;
     min-height: 100vh;
-    height: 100vh;
-    overflow: hidden;
-    overscroll-behavior: none;
-    overscroll-behavior-y: none;
+    overflow-x: hidden;
+    overflow-y: auto;
     position: relative;
     box-sizing: border-box;
+}
+
+/* Top white extension: ensures hard scroll / overscroll bounce at the top is pure white */
+body::before {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    width: 100%;
+    height: 200vh;
+    background: #ffffff;
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* =========================
+   HERO CONTAINER (INDEX)
+========================= */
+.hero-container {
+    position: relative;
+    width: 100%;
+    min-height: calc(100vh - var(--strip-peek));
+    background: #ffffff;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    z-index: 2;
 }
 
 /* =========================
@@ -81,25 +114,104 @@ body {
    GREEN FLOOR (PAGE 1)
 ========================= */
 .floor-strip {
-    position: fixed;
-    bottom: 0;
-    left: 0;
+    position: relative;
     width: 100%;
-    height: 150px;
+    height: var(--strip-full-height);
     background: #C4E6A8;
-    box-shadow: 0 100vh 0 100vh #C4E6A8;
     z-index: 1;
-    pointer-events: none;
+    box-sizing: border-box;
 }
 
+/* Bottom green extension: ensures no matter how hard you scroll at the end, it stays 100% green */
 .floor-strip::after {
     content: '';
     position: absolute;
     top: 100%;
     left: 0;
     width: 100%;
-    height: 200vh;
+    height: 300vh;
     background: #C4E6A8;
+    pointer-events: none;
+}
+
+/* =========================
+   STRIP HEIGHT SLIDER WIDGET
+========================= */
+.strip-slider-widget {
+    position: fixed;
+    bottom: 24px;
+    right: 28px;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 999px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    font-family: inherit;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    user-select: none;
+}
+
+.strip-slider-widget label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #333333;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.strip-slider-widget .slider-value {
+    color: #4a7c29;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    min-width: 44px;
+}
+
+.strip-slider-widget input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 110px;
+    height: 6px;
+    border-radius: 4px;
+    background: #e2e8f0;
+    outline: none;
+    cursor: pointer;
+}
+
+.strip-slider-widget input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #7bbd56;
+    border: 2px solid #ffffff;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+    cursor: grab;
+    transition: transform 0.15s ease, background-color 0.15s ease;
+}
+
+.strip-slider-widget input[type="range"]::-webkit-slider-thumb:active {
+    cursor: grabbing;
+    transform: scale(1.2);
+    background: #5ea834;
+}
+
+.strip-slider-widget input[type="range"]::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #7bbd56;
+    border: 2px solid #ffffff;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+    cursor: grab;
 }
 
 /* =========================
