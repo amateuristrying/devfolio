@@ -2,8 +2,8 @@
    CUSTOM PROPERTIES
 ========================= */
 :root {
-    --strip-peek: 52px; /* ~5 cm initial peek */
-    --strip-full-height: 260px; /* full height of green floor */
+    --strip-peek: 52px; /* 5.0 cm initial peek */
+    --strip-full-height: 125px; /* 12.0 cm max visible when fully scrolled */
 }
 
 /* =========================
@@ -76,6 +76,8 @@ body::before {
     font-weight: 800;
     font-size: 2.9rem;
     color: #C4E6A8; /* green highlight for name */
+    display: inline-block;
+    transition: transform 0.2s ease;
 }
 
 .page1-content p {
@@ -132,86 +134,6 @@ body::before {
     height: 300vh;
     background: #C4E6A8;
     pointer-events: none;
-}
-
-/* =========================
-   STRIP HEIGHT SLIDER WIDGET
-========================= */
-.strip-slider-widget {
-    position: fixed;
-    bottom: 24px;
-    right: 28px;
-    z-index: 1000;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 8px 16px;
-    background: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    border-radius: 999px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    font-family: inherit;
-    transition: opacity 0.25s ease, transform 0.25s ease;
-    user-select: none;
-}
-
-.strip-slider-widget label {
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: #333333;
-    white-space: nowrap;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.strip-slider-widget .slider-value {
-    color: #4a7c29;
-    font-weight: 700;
-    font-variant-numeric: tabular-nums;
-    min-width: 44px;
-}
-
-.strip-slider-widget input[type="range"] {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 110px;
-    height: 6px;
-    border-radius: 4px;
-    background: #e2e8f0;
-    outline: none;
-    cursor: pointer;
-}
-
-.strip-slider-widget input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background: #7bbd56;
-    border: 2px solid #ffffff;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
-    cursor: grab;
-    transition: transform 0.15s ease, background-color 0.15s ease;
-}
-
-.strip-slider-widget input[type="range"]::-webkit-slider-thumb:active {
-    cursor: grabbing;
-    transform: scale(1.2);
-    background: #5ea834;
-}
-
-.strip-slider-widget input[type="range"]::-moz-range-thumb {
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background: #7bbd56;
-    border: 2px solid #ffffff;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
-    cursor: grab;
 }
 
 /* =========================

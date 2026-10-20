@@ -7,33 +7,6 @@ gsap.set("#shadowPanel", { y: "-75px" });
 
 
 // ===============================
-// STRIP HEIGHT SLIDER CONTROLLER
-// ===============================
-const stripSlider = document.getElementById("stripSlider");
-const stripValText = document.getElementById("stripValText");
-const stripControl = document.getElementById("stripControl");
-
-if (stripSlider && stripValText) {
-    // Restore saved value if available
-    const savedVal = localStorage.getItem("stripPeek");
-    if (savedVal) {
-        stripSlider.value = savedVal;
-        document.documentElement.style.setProperty("--strip-peek", `${savedVal}px`);
-        const cmVal = (savedVal / 10.4).toFixed(1);
-        stripValText.textContent = `${cmVal} cm`;
-    }
-
-    stripSlider.addEventListener("input", (e) => {
-        const val = parseInt(e.target.value, 10);
-        document.documentElement.style.setProperty("--strip-peek", `${val}px`);
-        const cmVal = (val / 10.4).toFixed(1);
-        stripValText.textContent = `${cmVal} cm`;
-        localStorage.setItem("stripPeek", val);
-    });
-}
-
-
-// ===============================
 // GSAP DECODE HOVER EFFECT
 // ===============================
 function setupDecodeEffect(element, duration = 0.35) {
@@ -87,15 +60,89 @@ function setupDecodeEffect(element, duration = 0.35) {
 const knowMoreBtn = document.getElementById("knowMoreBtn");
 setupDecodeEffect(knowMoreBtn);
 
+const heroName = document.getElementById("heroName");
+if (heroName) {
+    setupDecodeEffect(heroName, 0.4);
+}
+
+
+// ===============================
+// HERO ENTRANCE TEXT ANIMATION (ON SITE OPEN)
+// ===============================
+function runHeroEntranceAnimation() {
+    const heroContent = document.querySelector(".page1-content");
+    const prefixEl = document.getElementById("heroPrefix");
+    const nameEl = document.getElementById("heroName");
+    const subEl = document.getElementById("heroSub");
+
+    if (!heroContent || !prefixEl || !nameEl || !subEl) return;
+
+    const prefixText = "Hi there, I am ";
+    const nameText = "Abhiroop";
+    const subText = "I help startups and companies build market-viable products.";
+    const chars = "!<>-_\\/[]{}—=+*^?#_0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+    // Smooth container fade and rise
+    gsap.fromTo(heroContent,
+        { opacity: 0, y: 26 },
+        { opacity: 1, y: 0, duration: 0.85, ease: "power3.out" }
+    );
+
+    function decodeTextReveal(el, targetText, duration, delay) {
+        const obj = { progress: 0 };
+        const len = targetText.length;
+
+        // Start with scrambled glyphs
+        el.textContent = targetText.replace(/[^\s]/g, () => chars[Math.floor(Math.random() * chars.length)]);
+
+        return gsap.to(obj, {
+            progress: len,
+            duration: duration,
+            delay: delay,
+            ease: "power2.out",
+            onUpdate: () => {
+                const current = obj.progress;
+                let res = "";
+                for (let i = 0; i < len; i++) {
+                    const char = targetText[i];
+                    if (char === " ") {
+                        res += " ";
+                    } else if (i < Math.floor(current)) {
+                        res += char;
+                    } else {
+                        res += chars[Math.floor(Math.random() * chars.length)];
+                    }
+                }
+                el.textContent = res;
+            },
+            onComplete: () => {
+                el.textContent = targetText;
+                el.setAttribute("data-original-text", targetText);
+            }
+        });
+    }
+
+    // Sequenced decode animation
+    decodeTextReveal(prefixEl, prefixText, 0.6, 0.15);
+    decodeTextReveal(nameEl, nameText, 0.5, 0.45);
+    decodeTextReveal(subEl, subText, 0.8, 0.65);
+}
+
+// Run hero animation on page open
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", runHeroEntranceAnimation);
+} else {
+    runHeroEntranceAnimation();
+}
+
 
 // ===============================
 // OPEN KNOW MORE PAGE
 // ===============================
 knowMoreBtn.addEventListener("click", () => {
 
-    // Hide KNOW MORE button and slider widget
+    // Hide KNOW MORE button
     knowMoreBtn.style.display = "none";
-    if (stripControl) stripControl.style.display = "none";
 
     // Create iframe
     const frame = document.createElement("iframe");
@@ -169,7 +216,6 @@ window.addEventListener("message", (event) => {
         frame.remove();
         knowMoreBtn.style.display = "block";
         knowMoreBtn.innerText = knowMoreBtn.getAttribute("data-original-text") || "Know More ↓";
-        if (stripControl) stripControl.style.display = "flex";
         gsap.set(strip, { y: "-75px" });
     });
 });
