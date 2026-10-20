@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Know More - Abhiroop</title>
+
+    <!-- Typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.4/gsap.min.js"></script>
+</head>
+
+<body class="page2">
+
+    <!-- HOME BUTTON -->
+    <button id="homeBtn" class="top-right-btn decode-btn" data-original-text="HOME ↑">HOME ↑</button>
+
+    <div class="page2-content">
+
+        <!-- =====================
+             MAIN GRID (LEFT TITLES + RIGHT ABOUT)
+        ====================== -->
+        <div class="content-grid">
+
+            <!-- LEFT: MAIN TITLES -->
+            <div class="section section-titles">
+                <h1 class="anim-text title-decode" data-original-text="Projects">Projects</h1>
+                <h1 class="anim-text title-decode" data-original-text="Blog Dump">Blog Dump</h1>
+                <h1 class="anim-text title-decode" data-original-text="Resume">Resume</h1>
+            </div>
+
+            <!-- RIGHT: ABOUT TEXT -->
+            <div class="section section-about">
+
+                <!-- Heading -->
+                <h2 class="anim-text">
+                    Product Developer / Tech Enthusiast
+                </h2>
+
+                <!-- Description -->
+                <p class="anim-text">
+                    I work across cloud infrastructure on AWS, data analysis,
+                    and backend systems. I enjoy building and maintaining B2B
+                    SaaS products, automating workflows, and turning raw data
+                    into practical, decision-ready insights.
+                </p>
+
+            </div>
+
+        </div>
+
+        <!-- =====================
+             FOOTER LINKS
+        ====================== -->
+        <div class="section section-footer">
+            <span class="footer-label">Find me here:</span>
+            <a href="mailto:abhiroophiremath@gmail.com" class="footer-item decode-btn" data-original-text="Email">Email</a>
+            <a href="https://linkedin.com/in/abhiroophiremath" target="_blank" rel="noopener noreferrer" class="footer-item decode-btn" data-original-text="LinkedIn">LinkedIn</a>
+            <a href="https://github.com/amateuristrying" target="_blank" rel="noopener noreferrer" class="footer-item decode-btn" data-original-text="Github">Github</a>
+            <a href="https://medium.com/@abhiroophiremath" target="_blank" rel="noopener noreferrer" class="footer-item decode-btn" data-original-text="Medium">Medium</a>
+            <a href="https://dev.to/abhiroophiremath" target="_blank" rel="noopener noreferrer" class="footer-item decode-btn" data-original-text="Dev">Dev</a>
+        </div>
+
+    </div>
+
+    <!-- HOME BUTTON COMMUNICATION -->
+    <script>
+        document.getElementById("homeBtn").addEventListener("click", () => {
+            window.parent.postMessage("goHome", "*");
+        });
+    </script>
+
+    <!-- TEXT SPLIT + ENTRANCE ANIMATION -->
+    <script>
+        function splitText(element) {
+            const text = element.innerText;
+            if (!element.getAttribute("data-original-text")) {
+                element.setAttribute("data-original-text", text.trim());
+            }
+            element.innerHTML = "";
+            const fragment = document.createDocumentFragment();
+
+            text.split("").forEach(char => {
+                const span = document.createElement("span");
+                span.className = "char";
+                span.innerText = char === " " ? "\u00A0" : char;
+                fragment.appendChild(span);
+            });
+
+            element.appendChild(fragment);
+        }
+
+        document
+            .querySelectorAll(".anim-text")
+            .forEach(el => splitText(el));
+
+        window.addEventListener("message", (event) => {
+            if (event.data === "startTextAnim") {
+                gsap.from(".char", {
+                    rotationX: -360,
+                    opacity: 0,
+                    duration: 0.35,
+                    ease: "power3.out",
+                    transformOrigin: "center center -60px",
+                    stagger: 0
+                });
+            }
+        });
+    </script>
+
+    <!-- GSAP DECODE HOVER EFFECT -->
+    <script>
+        function setupDecodeEffect(element, options = {}) {
+            const originalText = element.getAttribute("data-original-text") || element.innerText.trim();
+            element.setAttribute("data-original-text", originalText);
+
+            const chars = options.chars || "!<>-_\\/[]{}—=+*^?#_0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            const duration = options.duration || 0.4;
+            const isLeftTitle = options.isLeftTitle || false;
+            let tween = null;
+
+            element.addEventListener("mouseenter", () => {
+                if (tween) tween.kill();
+
+                if (isLeftTitle) {
+                    gsap.to(element, { x: 12, duration: 0.25, ease: "power2.out" });
+                }
+
+                const progressObj = { value: 0 };
+                const length = originalText.length;
+
+                tween = gsap.to(progressObj, {
+                    value: length,
+                    duration: duration,
+                    ease: "power2.out",
+                    onUpdate: () => {
+                        const currentProgress = progressObj.value;
+                        let output = "";
+                        for (let i = 0; i < length; i++) {
+                            const originalChar = originalText[i];
+                            if (originalChar === " ") {
+                                output += " ";
+                            } else if (i < Math.floor(currentProgress)) {
+                                output += originalChar;
+                            } else {
+                                output += chars[Math.floor(Math.random() * chars.length)];
+                            }
+                        }
+                        element.innerText = output;
+                    },
+                    onComplete: () => {
+                        element.innerText = originalText;
+                    }
+                });
+            });
+
+            element.addEventListener("mouseleave", () => {
+                if (isLeftTitle) {
+                    gsap.to(element, { x: 0, duration: 0.25, ease: "power2.out" });
+                }
+
+                if (tween && tween.isActive()) {
+                    tween.timeScale(2.5);
+                } else {
+                    element.innerText = originalText;
+                }
+            });
+        }
+
+        // Apply decode effect to left side titles
+        document.querySelectorAll(".title-decode").forEach(el => {
+            setupDecodeEffect(el, { duration: 0.4, isLeftTitle: true });
+        });
+
+        // Apply decode effect to interactive buttons
+        document.querySelectorAll(".decode-btn").forEach(el => {
+            setupDecodeEffect(el, { duration: 0.35, isLeftTitle: false });
+        });
+    </script>
+
+</body>
+</html>
